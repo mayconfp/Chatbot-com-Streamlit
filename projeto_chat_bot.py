@@ -192,8 +192,7 @@ def pagina_principal():
         st.session_state['mensagens'] = mensagens
         salvar_mensagens(mensagens)
         
-
-
+# FUNÇÕES DE MANIPULAÇÃO DE CONVERSAS ========================================================================
 def excluir_conversa(nome_arquivo):
     if (PASTA_MENSAGENS / nome_arquivo).exists():
         os.remove(PASTA_MENSAGENS / nome_arquivo)
@@ -201,7 +200,6 @@ def excluir_conversa(nome_arquivo):
         st.session_state['conversa_atual'] = ''
     else:
         st.error('Conversa não encontrada!')
-
 
 def tab_conversas(tab):
     tab.button('➕ Nova conversa',
