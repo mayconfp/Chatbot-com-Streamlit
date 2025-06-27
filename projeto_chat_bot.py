@@ -159,38 +159,41 @@ def pagina_principal():
         
         #nesse if qd usuario nao digita nada ele nao entra, mas se o usuario escreve algo ele entra no if 
     if prompt:
+        if st.session_state['api_key'] == '':
+            return st.error('Adicione sua chave API na aba de configurações')
+        else:
+                
+                #aqui faz uma nova mensagem de qd o usuario digita e o conteudo dela é o prompt que ele escreveu 
+            nova_mensagem = {'role': 'user',
+                            'content': prompt}
+                
+            chat =  st.chat_message(nova_mensagem['role'])
+            chat.markdown(nova_mensagem['content'])
+                
+                #adicionando as mensagens anteriores a nova mensagem do usuário 
+            mensagens.append(nova_mensagem)
             
-            #aqui faz uma nova mensagem de qd o usuario digita e o conteudo dela é o prompt que ele escreveu 
-        nova_mensagem = {'role': 'user',
-                         'content': prompt}
             
-        chat =  st.chat_message(nova_mensagem['role'])
-        chat.markdown(nova_mensagem['content'])
+            #receber a resposta da openai
+            chat = st.chat_message('assistant')
+            placeholder = chat.empty()
             
-            #adicionando as mensagens anteriores a nova mensagem do usuário 
-        mensagens.append(nova_mensagem)
-        
-        
-        #receber a resposta da openai
-        chat = st.chat_message('assistant')
-        placeholder = chat.empty()
-        
-        placeholder.markdown("▌")
-        
-        resposta_completa = ''
-        respostas = retorna_respota_modelo(mensagens, openai_key, modelo=st.session_state['modelo'], stream=True)
-        
-        for resposta in respostas:
-            resposta_completa += resposta.choices[0].delta.content or ''      
+            placeholder.markdown("▌")
             
-            placeholder.markdown(resposta_completa + "▌") 
-              
-        placeholder.markdown(resposta_completa)   
-        nova_mensagem = {'role': 'assistant', 'content' : resposta_completa}
-        mensagens.append(nova_mensagem)
-           
-        st.session_state['mensagens'] = mensagens
-        salvar_mensagens(mensagens)
+            resposta_completa = ''
+            respostas = retorna_respota_modelo(mensagens, openai_key, modelo=st.session_state['modelo'], stream=True)
+            
+            for resposta in respostas:
+                resposta_completa += resposta.choices[0].delta.content or ''      
+                
+                placeholder.markdown(resposta_completa + "▌") 
+                
+            placeholder.markdown(resposta_completa)   
+            nova_mensagem = {'role': 'assistant', 'content' : resposta_completa}
+            mensagens.append(nova_mensagem)
+            
+            st.session_state['mensagens'] = mensagens
+            salvar_mensagens(mensagens)
         
 # FUNÇÕES DE MANIPULAÇÃO DE CONVERSAS ========================================================================
 def excluir_conversa(nome_arquivo):
