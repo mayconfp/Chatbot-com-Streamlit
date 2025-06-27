@@ -1,0 +1,5 @@
+python-dotenv
+ipykernel
+streamlit
+unidecode
+openai
